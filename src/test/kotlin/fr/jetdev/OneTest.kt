@@ -1,6 +1,6 @@
 package fr.jetdev
 
-import computeFuel
+import fr.jetdev.one.computeFuel
 import org.junit.Test
 import kotlin.test.assertEquals
 
