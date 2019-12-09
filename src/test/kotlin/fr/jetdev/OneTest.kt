@@ -1,33 +1,24 @@
 package fr.jetdev
 
-import dayOne
+import computeFuel
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class OneTest {
 
-
     @Test
-    fun shouldReturn2for12() {
-        assertEquals(2, dayOne(listOf(12)));
-
+    fun shouldNotAddFuelForFuel() {
+        assertEquals(2, computeFuel(listOf(12)))
     }
 
     @Test
-    fun shouldReturn2for14() {
-        assertEquals(2, dayOne(listOf(12)));
-
+    fun shouldAddMoreFuel() {
+        assertEquals(966, computeFuel(listOf(1969)))
     }
 
     @Test
-    fun shouldReturn654for1969() {
-        assertEquals(654, dayOne(listOf(1969)));
-
-    }
-
-    @Test
-    fun shouldReturn33583for100756(){
-        assertEquals(33583, dayOne(listOf(100756)))
+    fun shouldAddEvenMoreFuel() {
+        assertEquals(50346, computeFuel(listOf(100756)))
     }
 
 }
