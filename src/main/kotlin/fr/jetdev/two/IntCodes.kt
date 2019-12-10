@@ -2,35 +2,49 @@ package fr.jetdev.two
 
 import java.util.stream.Collectors
 
-fun computeIntCode(baseIntCode: String): String {
-    val intCode = baseIntCode.split(',').stream().map { Integer.parseInt(it) }.collect(Collectors.toList())
+fun computeIntCode(input: String): String {
+    val memory = resetMemory(input, 12, 2)
 
-    set1202ProgramAlarm(intCode)
+    (0 until (memory.size - 1) step 4)
+        .takeWhile { computeChunkOperationAndContinue(it, memory) }
 
-    val chunkSize = 4;
-    (0 until (intCode.size - 1) step chunkSize)
-        .takeWhile { computeChunkOperationAndContinue(it, intCode) }
-
-    return intCode.joinToString(",")
+    return memory.joinToString(",")
 
 }
 
-fun set1202ProgramAlarm(baseIntCode: MutableList<Int>) {
-    baseIntCode[1] = 12
-    baseIntCode[2] = 2
+fun extrapolateNounAndVerbFromOutput(input: String, output: Int): Pair<Int, Int> {
+    for (noun in 0..99) {
+        for (verb in 0..99) {
+            val memory = resetMemory(input, noun, verb)
+            (0 until (memory.size - 1) step 4)
+                .takeWhile { computeChunkOperationAndContinue(it, memory) }
+            if(memory[0] == output) {
+                return Pair(noun, verb)
+            }
+        }
+    }
+    return Pair(0, 0) // todo (w.leemans) : gotta fix this ugly thing :D
 }
 
-fun computeChunkOperationAndContinue(chunkIndex: Int, intCode: MutableList<Int>): Boolean {
-    if (intCode.size < chunkIndex + 3) return false
+fun resetMemory(input: String, noun: Int, verb: Int): MutableList<Int> {
+    val memory = input.split(',').stream().map { Integer.parseInt(it) }.collect(Collectors.toList())
+    memory[1] = noun
+    memory[2] = verb
+    return memory
+}
 
-    val firstInputIndex = intCode[chunkIndex + 1]
-    val secondInputIndex = intCode[chunkIndex + 2]
-    val destIndex = intCode[chunkIndex + 3]
+fun computeChunkOperationAndContinue(instructionPointer: Int, memory: MutableList<Int>): Boolean {
+    if (memory.size < instructionPointer + 3) return false
 
-    when (intCode[chunkIndex]) {
-        1 -> intCode[destIndex] = intCode[firstInputIndex] + intCode[secondInputIndex]
-        2 -> intCode[destIndex] = intCode[firstInputIndex] * intCode[secondInputIndex]
+    val firstParameter = memory[instructionPointer + 1]
+    val secondParameter = memory[instructionPointer + 2]
+    val thirdParameter = memory[instructionPointer + 3]
+
+    when (memory[instructionPointer]) {
+        1 -> memory[thirdParameter] = memory[firstParameter] + memory[secondParameter]
+        2 -> memory[thirdParameter] = memory[firstParameter] * memory[secondParameter]
         99 -> return false
     }
     return true
 }
+
