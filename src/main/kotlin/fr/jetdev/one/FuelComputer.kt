@@ -1,3 +1,5 @@
+package fr.jetdev.one
+
 import kotlin.math.floor
 
 fun computeFuel(input: List<Int>): Int = input
